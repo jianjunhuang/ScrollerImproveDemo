@@ -9,10 +9,17 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 
 class SubFragment : Fragment() {
+
+    private val viewModel: SubFragmentViewModel by lazy {
+        ViewModelProvider(requireActivity())[SubFragmentViewModel::class.java]
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -20,7 +27,7 @@ class SubFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         return FrameLayout(requireContext()).apply {
-            addView(CombineWithViewPager2RecyclerView(requireContext()).also {
+            val recyclerView = CombineWithViewPager2RecyclerView(requireContext()).also {
                 it.adapter = object : RecyclerView.Adapter<ViewHolder>() {
                     override fun onCreateViewHolder(
                         parent: ViewGroup,
@@ -44,11 +51,21 @@ class SubFragment : Fragment() {
 
                 }
                 it.layoutManager = LinearLayoutManager(requireContext())
-            }, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
+            }
+            addView(
+                recyclerView,
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT
+            )
             layoutParams = ViewGroup.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.MATCH_PARENT
             )
+
+            viewModel.swipeFast.observe(viewLifecycleOwner) {
+                recyclerView.isSwipeFast = it
+            }
+
         }
     }
 
@@ -57,6 +74,12 @@ class SubFragment : Fragment() {
     }
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+
+    }
+
+    class SubFragmentViewModel : ViewModel() {
+
+        val swipeFast = MutableLiveData<Boolean>()
 
     }
 }
