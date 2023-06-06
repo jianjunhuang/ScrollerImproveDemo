@@ -1,5 +1,6 @@
 package xyz.juncat.scrollerimprove
 
+import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -27,6 +28,7 @@ class ViewPager2WithRecyclerViewFragment : Fragment() {
     ): View? {
 
         return LinearLayout(requireContext()).also { container ->
+            container.setBackgroundColor(Color.WHITE)
             container.orientation = LinearLayout.VERTICAL
             container.layoutParams = ViewGroup.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
