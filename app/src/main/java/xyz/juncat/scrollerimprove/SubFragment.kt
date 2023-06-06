@@ -65,6 +65,9 @@ class SubFragment : Fragment() {
             viewModel.swipeFast.observe(viewLifecycleOwner) {
                 recyclerView.isSwipeFast = it
             }
+            viewModel.swipeFast.observe(viewLifecycleOwner) {
+                recyclerView.isDispatch = it
+            }
 
         }
     }
@@ -80,6 +83,7 @@ class SubFragment : Fragment() {
     class SubFragmentViewModel : ViewModel() {
 
         val swipeFast = MutableLiveData<Boolean>()
+        val dispatch = MutableLiveData<Boolean>()
 
     }
 }

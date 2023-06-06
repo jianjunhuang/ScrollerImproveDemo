@@ -15,33 +15,16 @@ import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 
-class ViewPager2WithRecyclerViewFragment : Fragment() {
+class ViewPager2WithRecyclerViewFragment : BaseConfigureFragment() {
 
-    private val viewModel: SubFragment.SubFragmentViewModel by lazy {
-        ViewModelProvider(requireActivity())[SubFragment.SubFragmentViewModel::class.java]
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
 
-        return LinearLayout(requireContext()).also { container ->
-            container.setBackgroundColor(Color.WHITE)
-            container.orientation = LinearLayout.VERTICAL
-            container.layoutParams = ViewGroup.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.MATCH_PARENT
-            )
-
-            val improveCheckBox = CheckBox(requireContext())
-            improveCheckBox.text = "Swipe Fast?"
-            improveCheckBox.isChecked = true
-            container.addView(improveCheckBox, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-            improveCheckBox.setOnCheckedChangeListener { _, isChecked ->
-                viewModel.swipeFast.postValue(isChecked)
-            }
+        return (super.onCreateView(inflater, container, savedInstanceState) as LinearLayout).also { container ->
 
             val tabLayout = TabLayout(requireContext())
             container.addView(
