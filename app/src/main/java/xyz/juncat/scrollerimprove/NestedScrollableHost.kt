@@ -18,6 +18,7 @@ package xyz.juncat.scrollerimprove
 
 import android.content.Context
 import android.util.AttributeSet
+import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewConfiguration
@@ -42,6 +43,7 @@ class NestedScrollableHost : FrameLayout {
     private var touchSlop = 0
     private var initialX = 0f
     private var initialY = 0f
+    var debug = true
     private val parentViewPager: ViewPager2?
         get() {
             var v: View? = parent as? View
@@ -59,6 +61,7 @@ class NestedScrollableHost : FrameLayout {
 
     private fun canChildScroll(orientation: Int, delta: Float): Boolean {
         val direction = -delta.sign.toInt()
+        log("orientation: $orientation, direction: $direction")
         return when (orientation) {
             0 -> child?.canScrollHorizontally(direction) ?: false
             1 -> child?.canScrollVertically(direction) ?: false
@@ -67,15 +70,23 @@ class NestedScrollableHost : FrameLayout {
     }
 
     override fun onInterceptTouchEvent(e: MotionEvent): Boolean {
-        handleInterceptTouchEvent(e)
+        try {
+            handleInterceptTouchEvent(e)
+        } catch (t: Throwable) {
+            log(t.toString())
+        }
         return super.onInterceptTouchEvent(e)
     }
 
     private fun handleInterceptTouchEvent(e: MotionEvent) {
+
+        log("handleInterceptTouchEvent: ${e.action}")
+
         val orientation = parentViewPager?.orientation ?: return
 
         // Early return if child can't scroll in same direction as parent
         if (!canChildScroll(orientation, -1f) && !canChildScroll(orientation, 1f)) {
+            log("cant scroll")
             return
         }
 
@@ -92,21 +103,33 @@ class NestedScrollableHost : FrameLayout {
             val scaledDx = dx.absoluteValue * if (isVpHorizontal) .5f else 1f
             val scaledDy = dy.absoluteValue * if (isVpHorizontal) 1f else .5f
 
+            log("touchSlop: $touchSlop, Dx: $scaledDx, Dy: $scaledDy")
             if (scaledDx > touchSlop || scaledDy > touchSlop) {
                 if (isVpHorizontal == (scaledDy > scaledDx)) {
                     // Gesture is perpendicular, allow all parents to intercept
+                    log("isVpHorizontal == (scaledDy > scaledDx), false")
                     parent.requestDisallowInterceptTouchEvent(false)
                 } else {
                     // Gesture is parallel, query child if movement in that direction is possible
                     if (canChildScroll(orientation, if (isVpHorizontal) dx else dy)) {
                         // Child can scroll, disallow all parents to intercept
+                        log("canChildScroll(orientation, if (isVpHorizontal) dx else dy), true")
                         parent.requestDisallowInterceptTouchEvent(true)
                     } else {
                         // Child cannot scroll, allow all parents to intercept
+                        log("canChildScroll(orientation, if (isVpHorizontal) dx else dy), false")
                         parent.requestDisallowInterceptTouchEvent(false)
                     }
                 }
             }
         }
+    }
+
+    private fun log(msg: String) {
+        if (debug) Log.i(TAG, msg)
+    }
+
+    companion object {
+        private const val TAG = "NestedScrollableHost"
     }
 }
