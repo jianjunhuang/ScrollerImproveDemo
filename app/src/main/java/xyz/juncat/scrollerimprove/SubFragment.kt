@@ -28,6 +28,7 @@ class SubFragment : Fragment() {
     ): View? {
         return FrameLayout(requireContext()).apply {
             val recyclerView = CombineWithViewPager2RecyclerView(requireContext()).also {
+                it.debug = true
                 it.adapter = object : RecyclerView.Adapter<ViewHolder>() {
                     override fun onCreateViewHolder(
                         parent: ViewGroup,
