@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 
 class CombineWithViewPager2RecyclerView : RecyclerView {
 
-    private val debug = false
+    var debug = false
 
     constructor(context: Context) : super(context)
     constructor(context: Context, attributeSet: AttributeSet) : super(context, attributeSet)
