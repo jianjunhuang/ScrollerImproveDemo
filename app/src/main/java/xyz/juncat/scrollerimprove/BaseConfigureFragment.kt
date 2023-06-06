@@ -32,7 +32,7 @@ open class BaseConfigureFragment : Fragment() {
 
             val improveCheckBox = CheckBox(requireContext())
             improveCheckBox.text = "Swipe Fast?"
-            improveCheckBox.isChecked = true
+            improveCheckBox.isChecked = viewModel.swipeFast.value?: true
             container.addView(
                 improveCheckBox,
                 ViewGroup.LayoutParams.MATCH_PARENT,
@@ -44,7 +44,7 @@ open class BaseConfigureFragment : Fragment() {
 
             val dispatchCheckBox = CheckBox(requireContext())
             dispatchCheckBox.text = "RecyclerView dispatch?"
-            dispatchCheckBox.isChecked = true
+            dispatchCheckBox.isChecked = viewModel.dispatch.value?: true
             container.addView(
                 dispatchCheckBox,
                 ViewGroup.LayoutParams.MATCH_PARENT,
