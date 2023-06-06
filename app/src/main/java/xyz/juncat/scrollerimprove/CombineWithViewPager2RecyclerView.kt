@@ -8,6 +8,8 @@ import androidx.recyclerview.widget.RecyclerView
 
 class CombineWithViewPager2RecyclerView : RecyclerView {
 
+    private val debug = false
+
     constructor(context: Context) : super(context)
     constructor(context: Context, attributeSet: AttributeSet) : super(context, attributeSet)
     constructor(context: Context, attributeSet: AttributeSet, style: Int) : super(
@@ -38,8 +40,7 @@ class CombineWithViewPager2RecyclerView : RecyclerView {
                     val endY = ev.y.toInt()
                     val disX = kotlin.math.abs(endX - startX)
                     val disY = kotlin.math.abs(endY - startY)
-                    Log.i(
-                        TAG,
+                    log(
                         "dispatchTouchEvent: disX: $disX, dexY: $disY, disallowIntercept: $disallowIntercept"
                     )
                     if (disX > disY) {
@@ -50,7 +51,7 @@ class CombineWithViewPager2RecyclerView : RecyclerView {
                             val canScroll = canScrollHorizontally(
                                 startX - endX
                             )
-                            Log.i(TAG, "dispatchTouchEvent: can scroll: $canScroll")
+                            log("dispatchTouchEvent: can scroll: $canScroll")
                             parent.requestDisallowInterceptTouchEvent(canScroll)
                             //key code for swipe by ViewPager2 quick
                             if (isSwipeFast)
@@ -74,6 +75,11 @@ class CombineWithViewPager2RecyclerView : RecyclerView {
         this.disallowIntercept = disallowIntercept
         super.requestDisallowInterceptTouchEvent(disallowIntercept)
 
+    }
+
+    private fun log(info: String) {
+        if (debug)
+            Log.i(TAG, info)
     }
 
     companion object {
