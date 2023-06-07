@@ -32,7 +32,7 @@ open class BaseConfigureFragment : Fragment() {
 
             val improveCheckBox = CheckBox(requireContext())
             improveCheckBox.text = "Swipe Fast?"
-            improveCheckBox.isChecked = viewModel.swipeFast.value?: true
+            improveCheckBox.isChecked = viewModel.swipeFast.value?: false
             container.addView(
                 improveCheckBox,
                 ViewGroup.LayoutParams.MATCH_PARENT,

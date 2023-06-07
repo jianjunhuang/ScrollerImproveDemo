@@ -3,12 +3,16 @@ package xyz.juncat.scrollerimprove
 import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.CheckBox
 import android.widget.LinearLayout
+import androidx.core.view.children
+import androidx.core.view.get
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayout
@@ -23,7 +27,11 @@ class ViewPager2NestViewPager2Fragment : BaseConfigureFragment() {
         savedInstanceState: Bundle?
     ): View {
 
-        return (super.onCreateView(inflater, container, savedInstanceState) as LinearLayout).also { container ->
+        return (super.onCreateView(
+            inflater,
+            container,
+            savedInstanceState
+        ) as LinearLayout).also { container ->
 
             val tabLayout = TabLayout(requireContext())
             container.addView(

@@ -51,7 +51,7 @@ class SubFragment : Fragment() {
                     }
 
                 }
-                it.layoutManager = LinearLayoutManager(requireContext())
+                it.layoutManager = CombineWithViewPager2RecyclerView.LayoutManager(requireContext())
             }
             addView(
                 recyclerView,

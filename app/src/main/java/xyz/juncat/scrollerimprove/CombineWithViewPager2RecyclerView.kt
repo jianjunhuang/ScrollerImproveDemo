@@ -4,6 +4,8 @@ import android.content.Context
 import android.util.AttributeSet
 import android.util.Log
 import android.view.MotionEvent
+import androidx.constraintlayout.widget.ConstraintSet.Motion
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 
 class CombineWithViewPager2RecyclerView : RecyclerView {
@@ -24,9 +26,11 @@ class CombineWithViewPager2RecyclerView : RecyclerView {
     private var startY = 0
 
     var isDispatch: Boolean = true
-    var isSwipeFast: Boolean = true
+    var isSwipeFast: Boolean = false
+    private var triggerSwipeFast = false
 
     override fun dispatchTouchEvent(ev: MotionEvent): Boolean {
+        triggerSwipeFast = false
         if (isDispatch) {
             when (ev.action) {
                 MotionEvent.ACTION_DOWN -> {
@@ -52,10 +56,12 @@ class CombineWithViewPager2RecyclerView : RecyclerView {
                                 startX - endX
                             )
                             log("dispatchTouchEvent: can scroll: $canScroll")
+                            //conflict with [NestedScrollableHost]
                             parent.requestDisallowInterceptTouchEvent(canScroll)
                             //key code for swipe by ViewPager2 quick
-                            if (isSwipeFast)
-                                return false
+                            if (isSwipeFast) {
+                                triggerSwipeFast = true
+                            }
                         }
                     } else {
                         parent.requestDisallowInterceptTouchEvent(true)
@@ -71,6 +77,18 @@ class CombineWithViewPager2RecyclerView : RecyclerView {
         return super.dispatchTouchEvent(ev)
     }
 
+
+    override fun onTouchEvent(e: MotionEvent?): Boolean {
+        log("${triggerSwipeFast}, onTouchEvent: $e ")
+        if (triggerSwipeFast) {
+            //stop fling to trigger ViewPager2 swipe
+            (layoutManager as? LayoutManager)?.isScrollEnable = false
+        }
+        return super.onTouchEvent(e).apply {
+            (layoutManager as? LayoutManager)?.isScrollEnable = true
+        }
+    }
+
     override fun requestDisallowInterceptTouchEvent(disallowIntercept: Boolean) {
         this.disallowIntercept = disallowIntercept
         super.requestDisallowInterceptTouchEvent(disallowIntercept)
@@ -80,6 +98,21 @@ class CombineWithViewPager2RecyclerView : RecyclerView {
     private fun log(info: String) {
         if (debug)
             Log.i(TAG, info)
+    }
+
+    class LayoutManager : LinearLayoutManager {
+        var isScrollEnable = true
+
+        constructor(context: Context) : super(context)
+
+        override fun canScrollVertically(): Boolean {
+            return super.canScrollVertically() && isScrollEnable
+        }
+
+        override fun canScrollHorizontally(): Boolean {
+            return super.canScrollHorizontally() && isScrollEnable
+        }
+
     }
 
     companion object {
