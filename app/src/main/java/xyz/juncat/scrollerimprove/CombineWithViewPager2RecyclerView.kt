@@ -5,6 +5,7 @@ import android.util.AttributeSet
 import android.util.Log
 import android.view.MotionEvent
 import androidx.constraintlayout.widget.ConstraintSet.Motion
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 
@@ -100,8 +101,8 @@ class CombineWithViewPager2RecyclerView : RecyclerView {
             Log.i(TAG, info)
     }
 
-    class LayoutManager : LinearLayoutManager {
-        var isScrollEnable = true
+    class LayoutManager : LinearLayoutManager, Scrollable {
+        override var isScrollEnable = true
 
         constructor(context: Context) : super(context)
 
@@ -112,6 +113,25 @@ class CombineWithViewPager2RecyclerView : RecyclerView {
         override fun canScrollHorizontally(): Boolean {
             return super.canScrollHorizontally() && isScrollEnable
         }
+
+    }
+
+    class CombineGridLayoutManager(context: Context, spanCount: Int) :
+        GridLayoutManager(context, spanCount), Scrollable {
+        override var isScrollEnable = true
+
+        override fun canScrollVertically(): Boolean {
+            return super.canScrollVertically() && isScrollEnable
+        }
+
+        override fun canScrollHorizontally(): Boolean {
+            return super.canScrollHorizontally() && isScrollEnable
+        }
+
+    }
+
+    interface Scrollable {
+        var isScrollEnable: Boolean
 
     }
 
