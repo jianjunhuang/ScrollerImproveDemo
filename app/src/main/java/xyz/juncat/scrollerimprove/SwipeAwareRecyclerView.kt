@@ -4,12 +4,11 @@ import android.content.Context
 import android.util.AttributeSet
 import android.util.Log
 import android.view.MotionEvent
-import androidx.constraintlayout.widget.ConstraintSet.Motion
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 
-class CombineWithViewPager2RecyclerView : RecyclerView {
+class SwipeAwareRecyclerView : RecyclerView {
 
     var debug = false
 
@@ -83,10 +82,10 @@ class CombineWithViewPager2RecyclerView : RecyclerView {
         log("${triggerSwipeFast}, onTouchEvent: $e ")
         if (triggerSwipeFast) {
             //stop fling to trigger ViewPager2 swipe
-            (layoutManager as? LayoutManager)?.isScrollEnable = false
+            (layoutManager as? Scrollable)?.isScrollEnable = false
         }
         return super.onTouchEvent(e).apply {
-            (layoutManager as? LayoutManager)?.isScrollEnable = true
+            (layoutManager as? Scrollable)?.isScrollEnable = true
         }
     }
 
@@ -101,7 +100,7 @@ class CombineWithViewPager2RecyclerView : RecyclerView {
             Log.i(TAG, info)
     }
 
-    class LayoutManager : LinearLayoutManager, Scrollable {
+    class SwipeAwareLinearLayoutManager : LinearLayoutManager, Scrollable {
         override var isScrollEnable = true
 
         constructor(context: Context) : super(context)
@@ -116,7 +115,7 @@ class CombineWithViewPager2RecyclerView : RecyclerView {
 
     }
 
-    class CombineGridLayoutManager(context: Context, spanCount: Int) :
+    class SwipeAwareGridLayoutManager(context: Context, spanCount: Int) :
         GridLayoutManager(context, spanCount), Scrollable {
         override var isScrollEnable = true
 

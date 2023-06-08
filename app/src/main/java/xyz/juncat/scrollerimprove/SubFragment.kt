@@ -12,7 +12,6 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 
 class SubFragment : Fragment() {
@@ -27,7 +26,7 @@ class SubFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         return FrameLayout(requireContext()).apply {
-            val recyclerView = CombineWithViewPager2RecyclerView(requireContext()).also {
+            val recyclerView = SwipeAwareRecyclerView(requireContext()).also {
                 it.debug = true
                 it.adapter = object : RecyclerView.Adapter<ViewHolder>() {
                     override fun onCreateViewHolder(
@@ -51,7 +50,7 @@ class SubFragment : Fragment() {
                     }
 
                 }
-                it.layoutManager = CombineWithViewPager2RecyclerView.LayoutManager(requireContext())
+                it.layoutManager = SwipeAwareRecyclerView.SwipeAwareLinearLayoutManager(requireContext())
             }
             addView(
                 recyclerView,
