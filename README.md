@@ -8,6 +8,10 @@ Demo for ViewPager2 + RecyclerView and ViewPager2 + ViewPager2 + RecyclerView
 - 解决 ViewPager2 + ViewPager2 嵌套时手势冲突问题。
   - 主要基于官方代码进行了部分修改，以兼容上述的优化逻辑。
   - https://github.com/android/views-widgets-samples/blob/master/ViewPager2/app/src/main/java/androidx/viewpager2/integration/testapp/NestedScrollableHost.kt
+- Support RecyclerView nest RecyclerView(Horizontal)
+
+## issue
+not support two vertical RecyclerView 
 
 ### 基本类
 [CombineWithViewPager2RecyclerView](./app/src/main/java/xyz/juncat/scrollerimprove/CombineWithViewPager2RecyclerView.kt)
