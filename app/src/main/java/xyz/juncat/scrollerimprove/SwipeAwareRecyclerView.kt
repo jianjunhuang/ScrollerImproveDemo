@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.AttributeSet
 import android.util.Log
 import android.view.MotionEvent
+import android.view.View
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -28,6 +29,7 @@ class SwipeAwareRecyclerView : RecyclerView {
     var isDispatch: Boolean = true
     var isSwipeFast: Boolean = false
     private var triggerSwipeFast = false
+    private var nestedTargetView: View? = null
 
     override fun dispatchTouchEvent(ev: MotionEvent): Boolean {
         triggerSwipeFast = false
@@ -50,7 +52,15 @@ class SwipeAwareRecyclerView : RecyclerView {
                     if (disX > disY) {
                         //check Horizontal scroll RecyclerView in RecyclerView
                         if (disallowIntercept) {
-                            parent.requestDisallowInterceptTouchEvent(disallowIntercept)
+                            val canScroll = nestedTargetView?.canScrollHorizontally(
+                                startX - endX
+                            )
+                            log("can child scroll -> $canScroll")
+                            if (canScroll == true) {
+                                parent.requestDisallowInterceptTouchEvent(disallowIntercept)
+                            } else {
+                                parent.requestDisallowInterceptTouchEvent(false)
+                            }
                         } else {
                             val canScroll = canScrollHorizontally(
                                 startX - endX
@@ -93,6 +103,31 @@ class SwipeAwareRecyclerView : RecyclerView {
         this.disallowIntercept = disallowIntercept
         super.requestDisallowInterceptTouchEvent(disallowIntercept)
 
+    }
+
+    override fun onStartNestedScroll(child: View, target: View, nestedScrollAxes: Int): Boolean {
+        log("onStartNestedScroll: $nestedScrollAxes")
+        nestedTargetView = target
+        return super.onStartNestedScroll(child, target, nestedScrollAxes)
+    }
+
+    override fun onNestedScroll(
+        target: View,
+        dxConsumed: Int,
+        dyConsumed: Int,
+        dxUnconsumed: Int,
+        dyUnconsumed: Int
+    ) {
+        super.onNestedScroll(target, dxConsumed, dyConsumed, dxUnconsumed, dyUnconsumed)
+        log("onNestedScroll: $dxConsumed, $dxUnconsumed")
+        disallowIntercept = false
+        target.parent.requestDisallowInterceptTouchEvent(false)
+    }
+
+    override fun onStopNestedScroll(child: View) {
+        super.onStopNestedScroll(child)
+        nestedTargetView = null
+        log("onStopNestedScroll")
     }
 
     private fun log(info: String) {
